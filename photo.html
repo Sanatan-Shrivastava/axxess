@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>File Upload Example</title>
+  </head>
+  <body>
+    <!-- Upload Form -->
+
+    <h1>Upload Image to Cloudinary</h1>
+    
+    <form action="{{ url_for('geturl')}}"method="post">
+    	<input type="text" name="height" placeholder="Height" required="required" />
+        <button onclick="uploadImage()" type="submit" class="btn btn-primary btn-block btn-large">get URL</button>
+    </form>
+    <!-- Script to handle the form submission -->
+    <script>
+      function uploadImage() {
+        const cloudinaryUrl =
+          "https://api.cloudinary.com/v1_1/dq5uwnrsd/image/upload";
+        const cloudinaryUploadPreset = "ml_default";
+
+        // Generate a unique ID for the file
+        const uniqueId =
+          Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+
+        const file = document.getElementById("fileInput").files[0];
+        const filename = `${uniqueId}_${file.name}`;
+
+        const formData = new FormData();
+        formData.append("file", file, filename);
+        formData.append("upload_preset", cloudinaryUploadPreset);
+
+        fetch(cloudinaryUrl, {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => console.log("data Set URL:" + data.secure_url))
+          .catch((error) => console.error(error));
+      }
+    </script>
+  </body>
+</html>
